@@ -6,18 +6,19 @@ const bodyParser = require('body-parser')
 require('dotenv').config();
 
 const db = require('./config/db')
+const route = require('./routes/route')
 
 const app = express()
 const port = 5000
 
 db(`mongodb+srv://meyza:${process.env.MONGO_DB_PASSWORD}@cluster0.ryj8i.mongodb.net/${process.env.MONGO_DB_NAME}?retryWrites=true&w=majority`)
 
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
-app.use(cors({ origin: true }))
 app.use(morgan('dev'))
 app.use(express.json())
-
-app.get('/', (req, res) => res.send('Hello world'))
+app.use(express.urlencoded({extended: true}))
+app.use(route)
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
+app.use(cors({ origin: true}))
 
 app.listen(port, () => console.log(`App listening on PORT ${port}`))

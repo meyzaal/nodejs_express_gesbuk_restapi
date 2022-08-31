@@ -9,13 +9,11 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    password: String,
     role: {
         type: String,
         enum: ['User', 'Admin'],
-        required: true
     },
-    firebaseUid: String,
-    picture: String,
     accessToken: String
 }, { timestamps: true })
 

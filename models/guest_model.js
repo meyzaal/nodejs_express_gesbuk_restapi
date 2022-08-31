@@ -10,7 +10,7 @@ const guestSchema = mongoose.Schema({
         enum: ['VIP, Reguler'],
         default: 'Reguler'
     },
-    checkInDate: Date,
+    checkInTime: Date,
     picture: String,
     eventId: {
         type: mongoose.Schema.Types.ObjectId,

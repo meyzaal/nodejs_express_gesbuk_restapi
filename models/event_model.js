@@ -10,18 +10,18 @@ const eventSchema = mongoose.Schema({
         required: true
     },
     startDate: {
-        type: String,
+        type: Date,
         required: true
     },
     endDate: {
-        type: String,
+        type: Date,
         required: true
     },
-    user: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    guest: [{
+    guestList: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Guest'
     }]
