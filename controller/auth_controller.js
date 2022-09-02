@@ -147,7 +147,6 @@ class AuthController {
         const { newPassword, confirmPassword, email } = req.body
         const id = req.id
 
-
         user.findById(id)
             .then(result => {
                 if (result != null) {
@@ -185,8 +184,6 @@ class AuthController {
                     res.sendStatus(403)
                 }
             })
-
-
     }
 }
 

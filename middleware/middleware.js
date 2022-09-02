@@ -7,7 +7,7 @@ exports.verifyToken = (req, res, next) => {
     if (token == null) return res.sendStatus(401);
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-        if (err) return res.status(401).send(err.message);
+        if (err) return res.status(401).json({ message: err.message });
         req.id = decoded.id;
         next();
     })
