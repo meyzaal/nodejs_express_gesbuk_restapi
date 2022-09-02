@@ -9,7 +9,7 @@ const db = require('./config/db')
 const route = require('./routes/route')
 
 const app = express()
-const port = 5000
+const port = process.env.PORT
 
 db(`mongodb+srv://meyza:${process.env.MONGO_DB_PASSWORD}@cluster0.ryj8i.mongodb.net/${process.env.MONGO_DB_NAME}?retryWrites=true&w=majority`)
 

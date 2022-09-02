@@ -1,6 +1,7 @@
-const user = require('../models/user_model')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+
+const user = require('../models/user_model')
 
 class AuthController {
     registerAdmin(req, res) {
@@ -40,7 +41,9 @@ class AuthController {
                                 })
                             })
                             .catch(err => {
-                                res.status(500).json(err.message)
+                                res.status(500).json({
+                                    message: err.message
+                                })
                             })
                     }
                 })
@@ -85,7 +88,9 @@ class AuthController {
                     }
                 })
                 .catch(err => {
-                    res.status(500).json(err.message)
+                    res.status(500).json({
+                        message: err.message
+                    })
                 })
         }
     }
@@ -130,22 +135,58 @@ class AuthController {
                             message: 'Email salah'
                         })
                     }
+                }).catch(err => {
+                    res.status(500).json({
+                        message: err.message
+                    })
                 })
         }
     }
 
-    changePassword(req, res) {
-        const { recentPassword, newPassword, confirmPassword } = req.body
+    resetPassword(req, res) {
+        const { newPassword, confirmPassword, email } = req.body
+        const id = req.id
 
-        if ((recentPassword, newPassword, confirmPassword) == null) {
-            res.status(400).json({
-                message: 'Semua field wajib di isi!'
+
+        user.findById(id)
+            .then(result => {
+                if (result != null) {
+                    if (result.role != 'Admin') return res.sendStatus(403)
+                    if ((newPassword && confirmPassword && email) == null) return res.status(400).json({ message: 'Semua field wajib di isi!' })
+
+                    user.findOne({ email: email })
+                        .then(async docs => {
+                            if (docs != null) {
+                                if (newPassword !== confirmPassword) return res.status(400).json({ message: 'Password dan Konfirmasi Password tidak cocok!' })
+
+                                const salt = await bcrypt.genSalt()
+                                const hashPassword = await bcrypt.hash(newPassword, salt)
+
+                                docs.password = hashPassword
+                                docs.save()
+                                .then(doc => {
+                                    res.status(201).json({
+                                        message: 'Reset password berhasil',
+                                        data: doc
+                                    })
+                                })
+                            } else {
+                                res.status(404).json({
+                                    message: 'Data tidak ditemukan'
+                                })
+                            }
+                        })
+                        .catch(err => {
+                            res.status(500).json({
+                                message: err.message
+                            })
+                        })
+                } else {
+                    res.sendStatus(403)
+                }
             })
-        } else {
-            res.status(404).json({
-                message: 'Belom beres cuk'
-            })
-        }
+
+
     }
 }
 

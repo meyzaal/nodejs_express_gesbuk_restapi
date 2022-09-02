@@ -1,6 +1,8 @@
 const express = require('express');
-const AuthController = require('../controller/auth_controller');
+const middleware = require('../middleware/middleware')
+const AuthController = require('../controller/auth_controller')
 const UserController = require('../controller/user_controller')
+const EventController = require('../controller/event_controller')
 
 
 const route = express.Router()
@@ -10,11 +12,20 @@ route.get('/', (req, res) => {
     res.send('hello world')
 });
 
-route.get(api + '/user', UserController.getAllUser)
-route.get(api + '/user/:userId', UserController.getUserById)
+route.get(api + '/user', middleware.verifyToken, UserController.getUserById)
+route.get(api + '/user/all-user', middleware.verifyToken, UserController.getAllUser)
+route.patch(api + '/user/change-password', middleware.verifyToken, UserController.changePassword)
+route.patch(api + '/user', middleware.verifyToken, UserController.editUserInfo)
+route.delete(api + '/user/:userId', middleware.verifyToken, UserController.deleteUser)
 
-route.post(api + '/register-admin', AuthController.registerAdmin)
-route.post(api + '/register-user', AuthController.registerUser)
-route.post(api + '/login', AuthController.login)
+route.post(api + '/auth/register-admin', AuthController.registerAdmin)
+route.post(api + '/auth/register-user', AuthController.registerUser)
+route.post(api + '/auth/reset-password', middleware.verifyToken, AuthController.resetPassword)
+route.post(api + '/auth/login', AuthController.login)
+
+route.post(api + '/event', middleware.verifyToken, EventController.createEvent)
+route.get(api + '/event', middleware.verifyToken, EventController.getAllEvent)
+route.get(api + '/event/:eventId', EventController.getEventById)
+route.patch(api + '/event/:eventId', middleware.verifyToken, EventController.editEventInfo)
 
 module.exports = route
