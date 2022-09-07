@@ -5,9 +5,13 @@ const guestSchema = mongoose.Schema({
         type: String,
         requred: true
     },
+    // address: {
+    //     type: String,
+    //     required: true
+    // },
     category: {
         type: String,
-        enum: ['VIP, Reguler'],
+        enum: ['VIP', 'Reguler'],
         default: 'Reguler'
     },
     checkInTime: Date,

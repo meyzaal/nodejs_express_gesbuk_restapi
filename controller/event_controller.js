@@ -1,23 +1,27 @@
+const makeid = require('../utils/random_string')
+
 const event = require('../models/event_model')
 const user = require('../models/user_model')
 
 class EventController {
     createEvent(req, res) {
-        const { name, location, startDate, endDate, userId } = req.body
+        const { name, location, startDate, endDate, imageUrl } = req.body
         const id = req.id
 
         user.findById(id)
             .then(result => {
                 if (result == null) return res.sendStatus(403)
                 if (result.role != 'Admin') return res.sendStatus(403)
-                if ((name && location && startDate && endDate && userId) == null) return res.status(400).json({ message: 'Semua field wajib di isi' })
+                if ((name && location && startDate && endDate) == null) return res.status(400).json({ message: 'Semua field wajib di isi' })
 
+                const key = makeid(10)
                 const newEvent = new event({
                     name: name,
                     location: location,
                     startDate: startDate,
                     endDate: endDate,
-                    userId: userId
+                    key: key,
+                    imageUrl: imageUrl
                 })
 
                 newEvent.save()
@@ -101,7 +105,7 @@ class EventController {
 
     editEventInfo(req, res) {
         const eventId = req.params.eventId
-        const { name, location, startDate, endDate } = req.body
+        const { name, location, startDate, endDate, imageUrl } = req.body
         const id = req.id
 
         user.findById(id)
@@ -119,6 +123,7 @@ class EventController {
                         result.location = location ?? result.location
                         result.startDate = startDate ?? result.startDate
                         result.endDate = endDate ?? result.endDate
+                        result.imageUrl = imageUrl ?? result.imageUrl
 
                         result.save()
                             .then(docs => {
@@ -133,6 +138,50 @@ class EventController {
                                 })
                             })
 
+                    })
+                    .catch(err => {
+                        res.status(500).json({
+                            message: err.message
+                        })
+                    })
+            })
+            .catch(err => {
+                res.status(500).json({
+                    message: err.message
+                })
+            })
+    }
+
+    addUserToEvent(req, res) {
+        const id = req.id
+        const key = req.query.key
+
+        user.findById(id)
+            .then(result => {
+                if (result == null) return res.sendStatus(401)
+                if (result.role != 'User') return res.sendStatus(403)
+
+                event.findOne({ key: key })
+                    .then(docs => {
+                        if (docs == null) return res.sendStatus(400)
+                        if (docs.isEnrolled == true) return res.sendStatus(403)
+
+                        docs.userId = id
+                        docs.isEnrolled = true
+                        docs.key = null
+
+                        docs.save()
+                            .then(doc => {
+                                res.status(201).json({
+                                    message: 'User berhasil ditambahkan ke event',
+                                    data: doc
+                                })
+                            })
+                            .catch(err => {
+                                res.status(500).json({
+                                    message: err.message
+                                })
+                            })
                     })
                     .catch(err => {
                         res.status(500).json({

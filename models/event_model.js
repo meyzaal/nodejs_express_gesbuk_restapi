@@ -5,6 +5,7 @@ const eventSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    imageUrl: String,
     location: {
         type: String,
         required: true
@@ -16,6 +17,11 @@ const eventSchema = mongoose.Schema({
     endDate: {
         type: Date,
         required: true
+    },
+    key: String,
+    isEnrolled: {
+        type: Boolean,
+        default: false
     },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
