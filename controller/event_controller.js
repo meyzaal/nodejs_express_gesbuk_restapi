@@ -195,6 +195,29 @@ class EventController {
                 })
             })
     }
+
+    getAllEventTest(req, res) {
+
+        event.find()
+            .then(docs => {
+                if (docs == null) return res.status(404).json({
+                    message: 'Data tidak ditemukan'
+                })
+                if (docs.length < 1) return res.status(404).json({
+                    message: 'Data tidak ditemukan'
+                })
+
+                res.status(200).json({
+                    message: 'Berhasil mendapatkan data',
+                    data: docs
+                })
+            })
+            .catch(err => {
+                res.status(500).json({
+                    message: err.message
+                })
+            })
+    }
 }
 
 module.exports = new EventController

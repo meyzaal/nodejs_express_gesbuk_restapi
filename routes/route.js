@@ -32,6 +32,7 @@ route.post(api + '/auth/login', AuthController.login)
 // event
 route.post(api + '/event', Middleware.verifyAccessToken, EventController.createEvent)
 route.get(api + '/event', Middleware.verifyAccessToken, EventController.getAllEvent)
+route.get(api + '/event/get-all-event-test', EventController.getAllEvent)
 route.get(api + '/event/:eventId', Middleware.verifyAccessToken ,EventController.getEventById)
 route.patch(api + '/event/:eventId', Middleware.verifyAccessToken, EventController.editEventInfo)
 route.put(api + '/event/add-user', Middleware.verifyAccessToken, EventController.addUserToEvent)
