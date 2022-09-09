@@ -31,6 +31,7 @@ class GuestController {
                     let doc = {
                         name: row[0],
                         category: row[1],
+                        address: row[2],
                         eventId: eventId
                     }
 

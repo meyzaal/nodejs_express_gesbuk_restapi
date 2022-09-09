@@ -83,6 +83,7 @@ class EventController {
         const eventId = req.params.eventId
 
         event.findById(eventId)
+            .populate('guestList')
             .then(result => {
                 if (result == null) return res.status(404).json({
                     message: 'Data tidak ditemukan'
