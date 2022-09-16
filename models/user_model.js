@@ -9,12 +9,11 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    password: String,
     role: {
         type: String,
-        enum: ['User', 'Admin'],
+        enum: ['user', 'admin'],
     },
-    accessToken: String
+    picture: String
 }, { timestamps: true })
 
 module.exports = mongoose.model('User', userSchema)

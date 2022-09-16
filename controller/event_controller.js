@@ -1,223 +1,154 @@
 const makeid = require('../utils/random_string')
 
-const event = require('../models/event_model')
-const user = require('../models/user_model')
+const Event = require('../models/event_model')
+const User = require('../models/user_model')
 
 class EventController {
-    createEvent(req, res) {
-        const { name, location, startDate, endDate, imageUrl } = req.body
-        const id = req.id
+    async createEvent(req, res) {
+        try {
+            const { name, location, startDate, endDate, imageUrl, eventType } = req.body
 
-        user.findById(id)
-            .then(result => {
-                if (result == null) return res.sendStatus(403)
-                if (result.role != 'Admin') return res.sendStatus(403)
-                if ((name && location && startDate && endDate) == null) return res.status(400).json({ message: 'Semua field wajib di isi' })
+            if ((name && location && startDate && endDate && eventType) == null) return res.status(400).json({ message: 'Semua field wajib di isi' })
 
-                const key = makeid(10)
-                const newEvent = new event({
-                    name: name,
-                    location: location,
-                    startDate: startDate,
-                    endDate: endDate,
-                    key: key,
-                    imageUrl: imageUrl
-                })
+            let defaultImage
 
-                newEvent.save()
-                    .then(docs => {
-                        res.status(201).json({
-                            message: 'Berhasil menambahkan data',
-                            data: docs
-                        })
-                    })
-                    .catch(err => {
-                        res.status(500).json({
-                            message: err.message
-                        })
-                    })
+            switch (eventType) {
+                case 'birthday':
+                    defaultImage = 'https://images.unsplash.com/photo-1553915632-175f60dd8e36?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80'
+                    break;
+                case 'wedding':
+                    defaultImage = 'https://images.unsplash.com/photo-1562967005-a3c85514d3e9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80'
+                case 'seminar':
+                    defaultImage = 'https://images.unsplash.com/photo-1544531585-f14f463149ec?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80'
+                case 'concert':
+                    defaultImage = 'https://images.unsplash.com/photo-1565035010268-a3816f98589a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80'
+
+                default:
+                    defaultImage = 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=869&q=80'
+                    break;
+            }
+
+            const key = makeid(10)
+            let newEvent = new Event({
+                name: name,
+                location: location,
+                startDate: startDate,
+                endDate: endDate,
+                key: key,
+                imageUrl: imageUrl ?? defaultImage
             })
-            .catch(err => {
-                res.status(500).json({
-                    message: err.message
-                })
+
+            let saveEvent = await newEvent.save()
+
+            res.status(201).json({
+                message: 'Berhasil menambahkan data',
+                data: saveEvent
             })
+        } catch (error) {
+            res.status(500).json({
+                message: error.message
+            })
+        }
     }
 
-    getAllEvent(req, res) {
-        const id = req.id
+    async getAllEvent(req, res) {
+        try {
+            let result = await Event.find()
 
-        user.findById(id)
-            .then(result => {
-                if (result == null) return res.sendStatus(403)
-                if (result.role != 'Admin') return res.sendStatus(403)
-
-                event.find()
-                    .then(docs => {
-                        if (docs == null) return res.status(404).json({
-                            message: 'Data tidak ditemukan'
-                        })
-                        if (docs.length < 1) return res.status(404).json({
-                            message: 'Data tidak ditemukan'
-                        })
-
-                        res.status(200).json({
-                            message: 'Berhasil mendapatkan data',
-                            data: docs
-                        })
-                    })
-                    .catch(err => {
-                        res.status(500).json({
-                            message: err.message
-                        })
-                    })
+            if (result == null || result.length < 1) return res.status(404).json({
+                message: 'Data tidak ditemukan'
             })
-            .catch(err => {
-                res.status(500).json({
-                    message: err.message
-                })
+
+            res.status(200).json({
+                message: 'Berhasil mendapatkan data',
+                data: result
             })
+        } catch (error) {
+            res.status(500).json({
+                message: error.message
+            })
+        }
     }
 
-    getEventById(req, res) {
-        const eventId = req.params.eventId
+    async getEventById(req, res) {
+        try {
+            const eventId = req.params.eventId
 
-        event.findById(eventId)
-            .populate('guestList')
-            .then(result => {
-                if (result == null) return res.status(404).json({
-                    message: 'Data tidak ditemukan'
-                })
-                if (result.length < 1) return res.status(404).json({
-                    message: 'Data tidak ditemukan'
-                })
+            let result = await Event.findById(eventId).populate('guestList')
 
-                res.status(200).json({
-                    message: 'Berhasil mendapatkan data',
-                    data: result
-                })
+            if (result == null || result.length < 1) return res.status(404).json({
+                message: 'Data tidak ditemukan'
             })
-            .catch(err => {
-                res.status(500).json({
-                    message: err.message
-                })
+
+            res.status(200).json({
+                message: 'Berhasil mendapatkan data',
+                data: result
             })
+        } catch (error) {
+            res.status(500).json({
+                message: error.message
+            })
+        }
     }
 
-    editEventInfo(req, res) {
-        const eventId = req.params.eventId
-        const { name, location, startDate, endDate, imageUrl } = req.body
-        const id = req.id
+    async editEventInfo(req, res) {
+        try {
+            const eventId = req.params.eventId
+            const { name, location, startDate, endDate, imageUrl, eventType } = req.body
 
-        user.findById(id)
-            .then(doc => {
-                if (doc == null) return res.sendStatus(403)
-                if ((doc._id !== id) && (doc.role !== 'Admin')) return res.sendStatus(403)
-
-                event.findById(eventId)
-                    .then(result => {
-                        if (result == null) return res.status(404).json({
-                            message: 'Data tidak ditemukan'
-                        })
-
-                        result.name = name ?? result.name
-                        result.location = location ?? result.location
-                        result.startDate = startDate ?? result.startDate
-                        result.endDate = endDate ?? result.endDate
-                        result.imageUrl = imageUrl ?? result.imageUrl
-
-                        result.save()
-                            .then(docs => {
-                                res.status(201).json({
-                                    message: 'Data berhasil diubah',
-                                    data: docs
-                                })
-                            })
-                            .catch(err => {
-                                res.status(500).json({
-                                    message: err.message
-                                })
-                            })
-
-                    })
-                    .catch(err => {
-                        res.status(500).json({
-                            message: err.message
-                        })
-                    })
+            let event = await Event.findById(eventId)
+            if (event == null || event.length < 1) return res.status(404).json({
+                message: 'Data tidak ditemukan'
             })
-            .catch(err => {
-                res.status(500).json({
-                    message: err.message
-                })
+
+            const newKey = makeid(10)
+
+            event.name = name ?? event.name
+            event.location = location ?? event.location
+            event.startDate = startDate ?? event.startDate
+            event.endDate = endDate ?? event.endDate
+            event.imageUrl = imageUrl ?? event.imageUrl
+            event.eventType = eventType ?? event.eventType
+            event.key = newKey
+
+            let saveEvent = await event.save()
+
+            res.status(201).json({
+                message: 'Data berhasil diubah',
+                data: saveEvent
             })
+        } catch (error) {
+            res.status(500).json({
+                message: error.message
+            })
+        }
     }
 
-    addUserToEvent(req, res) {
-        const id = req.id
-        const key = req.query.key
+    async addUserToEvent(req, res) {
+        try {
+            const userData = req.userData
+            const id = userData._id
+            const key = req.query.key
 
-        user.findById(id)
-            .then(result => {
-                if (result == null) return res.sendStatus(401)
-                if (result.role != 'User') return res.sendStatus(403)
+            let event = await Event.findOne({ key: key })
+            if (event == null) return res.sendStatus(400)
+            if (event.isEnrolled == true) return res.sendStatus(403)
 
-                event.findOne({ key: key })
-                    .then(docs => {
-                        if (docs == null) return res.sendStatus(400)
-                        if (docs.isEnrolled == true) return res.sendStatus(403)
+            event.userId = id
+            event.isEnrolled = true
+            event.key = null
 
-                        docs.userId = id
-                        docs.isEnrolled = true
-                        docs.key = null
+            let saveEvent = await event.save()
 
-                        docs.save()
-                            .then(doc => {
-                                res.status(201).json({
-                                    message: 'User berhasil ditambahkan ke event',
-                                    data: doc
-                                })
-                            })
-                            .catch(err => {
-                                res.status(500).json({
-                                    message: err.message
-                                })
-                            })
-                    })
-                    .catch(err => {
-                        res.status(500).json({
-                            message: err.message
-                        })
-                    })
+            res.status(201).json({
+                message: 'User berhasil ditambahkan ke event',
+                data: saveEvent
             })
-            .catch(err => {
-                res.status(500).json({
-                    message: err.message
-                })
+        } catch (error) {
+            res.status(500).json({
+                message: error.message
             })
-    }
-
-    getAllEventTest(req, res) {
-
-        event.find()
-            .then(docs => {
-                if (docs == null) return res.status(404).json({
-                    message: 'Data tidak ditemukan'
-                })
-                if (docs.length < 1) return res.status(404).json({
-                    message: 'Data tidak ditemukan'
-                })
-
-                res.status(200).json({
-                    message: 'Berhasil mendapatkan data',
-                    data: docs
-                })
-            })
-            .catch(err => {
-                res.status(500).json({
-                    message: err.message
-                })
-            })
+        }
     }
 }
 

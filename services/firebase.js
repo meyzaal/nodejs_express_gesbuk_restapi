@@ -1,3 +1,5 @@
+
+const { initializeApp } = require('firebase/app');
 const admin = require('firebase-admin')
 
 const serviceAccount = {
@@ -14,9 +16,10 @@ const serviceAccount = {
 
 const firebase = admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
+
 })
 
 module.exports = {
-    auth: firebase.auth()
+    auth: firebase.auth(),
 }
 

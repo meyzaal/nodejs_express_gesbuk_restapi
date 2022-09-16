@@ -11,8 +11,8 @@ const guestSchema = mongoose.Schema({
     },
     category: {
         type: String,
-        enum: ['VIP', 'Reguler'],
-        default: 'Reguler'
+        enum: ['vip', 'reguler'],
+        default: 'reguler'
     },
     checkInTime: Date,
     picture: String,

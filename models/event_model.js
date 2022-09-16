@@ -23,6 +23,11 @@ const eventSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
+    eventType: {
+        type: String,
+        enum: ['birthday', 'concert', 'wedding', 'seminar', 'event'],
+        default: 'event'
+    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'

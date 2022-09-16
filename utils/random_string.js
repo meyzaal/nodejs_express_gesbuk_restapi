@@ -1,5 +1,5 @@
 module.exports = function makeid(length) {
-    let result
+    let result = ''
     let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
     let charactersLength = characters.length
     for (let i = 0; i < length; i++) {
