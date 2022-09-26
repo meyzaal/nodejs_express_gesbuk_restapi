@@ -42,7 +42,7 @@ class UserController {
         try {
             const userData = req.userData
             const id = userData._id
-            const { name, email, picture } = req.body
+            const { name, email, picture, phone } = req.body
 
             let user = await User.findById(id)
             if (user == null || user.length < 1) return res.status(404).json({
@@ -52,6 +52,7 @@ class UserController {
             user.name = name ?? user.name
             user.email = email ?? user.email
             user.picture = picture ?? user.picture
+            user.phone = phone ?? user.phone ?? null
 
             let saveUser = await user.save()
             res.status(201).json({

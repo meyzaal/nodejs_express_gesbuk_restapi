@@ -13,6 +13,7 @@ const userSchema = mongoose.Schema({
         type: String,
         enum: ['user', 'admin'],
     },
+    phone: String,
     picture: String
 }, { timestamps: true })
 

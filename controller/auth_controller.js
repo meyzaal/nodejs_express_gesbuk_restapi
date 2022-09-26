@@ -28,8 +28,6 @@ class AuthController {
                 user = await newUser.save();
             }
 
-            delete user.password
-
             res.status(200).json({
                 message: 'Berhasil login',
                 data: user
