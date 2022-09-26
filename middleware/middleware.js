@@ -29,7 +29,7 @@ class Middleware {
         try {
             let user = req.userData
             if (!user) return res.sendStatus(403)
-            if (user.role != 'admin') res.sendStatus(403)
+            if (user.role != 'admin') return res.sendStatus(403)
 
             req.userData = user
             next()
@@ -44,7 +44,7 @@ class Middleware {
         try {
             let user = req.userData
             if (!user) return res.sendStatus(403)
-            if (user.role != 'user') res.sendStatus(403)
+            if (user.role != 'user') return res.sendStatus(403)
 
             req.userData = user
             next()
