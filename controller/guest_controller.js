@@ -35,8 +35,6 @@ class GuestController {
                 data.push(doc)
             })
 
-            console.log(data)
-
             let guest = await Guest.insertMany(data)
 
             res.status(201).json({
@@ -56,6 +54,55 @@ class GuestController {
             })
         }
     }
+
+    async getGuestByEventId(req, res) {
+        try {
+            const eventId = req.params.eventId
+            let result = await Guest.find({ eventId: eventId })
+
+            if (result == null || result.length < 1) return res.status(404).json({
+                message: 'Data tidak ditemukan'
+            })
+
+            res.status(200).json({
+                message: 'Berhasil mendapatkan data',
+                data: result
+            })
+        } catch (error) {
+            res.status(500).json({
+                message: error.message
+            })
+        }
+    }
+
+    async guestCheckin(req, res) {
+        try {
+            const guestId = req.params.guestId
+            let result = await Guest.findById(guestId)
+
+            if (result == null || result.length < 1) return res.status(404).json({
+                message: 'Data tidak ditemukan'
+            })
+
+            const checkInTime = req.body.checkInTime
+            if (checkInTime == null) return res.sendStatus(400)
+
+            result.checkInTime = checkInTime
+
+            let saveGuest = await result.save()
+
+            res.status(201).json({
+                message: 'Guest berhasil check in',
+                data: saveGuest
+            })
+        } catch (error) {
+            res.status(500).json({
+                message: error.message
+            })
+        }
+    }
+
+    async guestPicture() {}
 
     addGuest(req, res) {
         const eventId = req.params.eventId

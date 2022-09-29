@@ -13,15 +13,18 @@ class EventController {
             let defaultImage
 
             switch (eventType) {
-                case 'birthday':
+                case 'wedding':
                     defaultImage = 'https://images.unsplash.com/photo-1553915632-175f60dd8e36?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80'
                     break;
-                case 'wedding':
+                case 'birthday':
                     defaultImage = 'https://images.unsplash.com/photo-1562967005-a3c85514d3e9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80'
+                    break;
                 case 'seminar':
                     defaultImage = 'https://images.unsplash.com/photo-1544531585-f14f463149ec?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80'
+                    break;
                 case 'concert':
                     defaultImage = 'https://images.unsplash.com/photo-1565035010268-a3816f98589a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80'
+                    break;
 
                 default:
                     defaultImage = 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=869&q=80'
@@ -35,7 +38,8 @@ class EventController {
                 startDate: startDate,
                 endDate: endDate,
                 key: key,
-                imageUrl: imageUrl ?? defaultImage
+                imageUrl: imageUrl ?? defaultImage,
+                eventType: eventType
             })
 
             let saveEvent = await newEvent.save()
