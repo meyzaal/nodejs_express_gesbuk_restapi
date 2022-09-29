@@ -79,7 +79,7 @@ class GuestController {
         try {
             const guestId = req.params.guestId
             if (guestId == null) return res.sendStatus(400)
-            
+
             let result = await Guest.findById(guestId)
 
             if (result == null || result.length < 1) return res.status(404).json({
@@ -104,7 +104,42 @@ class GuestController {
         }
     }
 
-    async guestPicture() {}
+    async guestPicture() { }
+
+    async searchGuest(req, res) {
+        try {
+            let keyword = {}
+
+            if (req.query.keyword) {
+                keyword =
+                {
+                    $or: [
+                        { name: { $regex: req.query.keyword, $options: 'i' } },
+                        { address: { $regex: req.query.keyword, $options: 'i' } }
+                    ]
+                }
+
+            }
+
+            console.log(keyword)
+
+            let result = await Guest.find(keyword)
+
+            if (result == null || result.length < 1) return res.status(404).json({
+                message: 'Data tidak ditemukan'
+            })
+
+            res.status(200).json({
+                message: 'Berhasil mendapatkan data',
+                data: result
+            })
+        } catch (error) {
+            res.status(500).json({
+                message: error.message
+            })
+        }
+
+    }
 
     addGuest(req, res) {
         const eventId = req.params.eventId
