@@ -78,6 +78,8 @@ class GuestController {
     async guestCheckin(req, res) {
         try {
             const guestId = req.params.guestId
+            if (guestId == null) return res.sendStatus(400)
+            
             let result = await Guest.findById(guestId)
 
             if (result == null || result.length < 1) return res.status(404).json({
