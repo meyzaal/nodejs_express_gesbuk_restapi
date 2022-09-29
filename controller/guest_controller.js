@@ -2,6 +2,7 @@ const readXlsxFile = require('read-excel-file/node')
 
 const Guest = require('../models/guest_model')
 const Event = require('../models/event_model')
+const { unlink } = require('node:fs/promises')
 
 class GuestController {
     createGuest(req, res) {
@@ -15,6 +16,8 @@ class GuestController {
     async importGuestFromExcel(req, res) {
         try {
             const eventId = req.params.eventId
+
+            await Guest.deleteMany({ eventId: eventId })
 
             if (req.file == undefined) return res.status(400).json({
                 message: 'Hanya file excel yang diperbolehkan'
@@ -48,6 +51,8 @@ class GuestController {
             event.guestList = listGuestId
 
             event.save()
+
+            await unlink(path)
         } catch (error) {
             res.status(500).json({
                 message: error.message
@@ -109,6 +114,9 @@ class GuestController {
     async searchGuest(req, res) {
         try {
             let keyword = {}
+            const eventId = req.params.eventId
+
+            if (!eventId) return res.sendStatus(400)
 
             if (req.query.keyword) {
                 keyword =
@@ -121,9 +129,12 @@ class GuestController {
 
             }
 
-            console.log(keyword)
-
-            let result = await Guest.find(keyword)
+            let result = await Guest.find({
+                $and: [
+                    { eventId: eventId },
+                    keyword
+                ]
+            })
 
             if (result == null || result.length < 1) return res.status(404).json({
                 message: 'Data tidak ditemukan'
