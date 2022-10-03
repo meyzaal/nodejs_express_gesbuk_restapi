@@ -63,11 +63,11 @@ class GuestController {
     async getGuestByEventId(req, res) {
         try {
             const eventId = req.params.eventId
-            const { page = 1, limit = 20 } = req.query;
+            const { page = '1', limit = '20' } = req.query;
 
             let result = await Guest.find({ eventId: eventId })
-                .limit(limit * 1)
-                .skip((page - 1) * limit)
+                .limit(parseInt(limit) * 1)
+                .skip((parseInt(page) - 1) * parseInt(limit))
                 .exec()
 
             // get total documents in the Posts collection 
@@ -80,8 +80,8 @@ class GuestController {
             res.status(200).json({
                 message: 'Berhasil mendapatkan data',
                 data: result,
-                currentPage: page,
-                totalResults: count,
+                currentPage: parseInt(page),
+                totalResults: parseInt(count),
                 totalPages: Math.ceil(count / limit),
 
             })
