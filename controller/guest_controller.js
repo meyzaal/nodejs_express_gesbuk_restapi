@@ -80,8 +80,10 @@ class GuestController {
             res.status(200).json({
                 message: 'Berhasil mendapatkan data',
                 data: result,
+                currentPage: page,
+                totalResults: count,
                 totalPages: Math.ceil(count / limit),
-                currentPage: page
+
             })
         } catch (error) {
             res.status(500).json({
