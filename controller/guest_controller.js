@@ -63,7 +63,7 @@ class GuestController {
     async getGuestByEventId(req, res) {
         try {
             const eventId = req.params.eventId
-            const { page = 1, limit = 10 } = req.query;
+            const { page = 1, limit = 20 } = req.query;
 
             let result = await Guest.find({ eventId: eventId })
                 .limit(limit * 1)
