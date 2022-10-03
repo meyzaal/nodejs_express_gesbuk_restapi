@@ -35,7 +35,7 @@ route.put(api + '/event/add-user', Middleware.verifyFirebaseToken, Middleware.ve
 
 // guest
 route.post(api + '/guest/import-guest/:eventId', Middleware.verifyFirebaseToken, Middleware.verifyAdmin, uploadFile('excel').single('uploadFile'), GuestController.importGuestFromExcel)
-route.get(api + '/guest/from-event/:eventId', Middleware.verifyFirebaseToken, GuestController.getGuestByEventId)
+route.get(api + '/guest/from-event/:eventId',  GuestController.getGuestByEventId)
 route.get(api + '/guest/from-event/:eventId/search', GuestController.searchGuest)
 route.patch(api + '/guest/check-in/:guestId', Middleware.verifyFirebaseToken, GuestController.guestCheckin)
 
