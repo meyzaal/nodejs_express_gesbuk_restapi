@@ -63,15 +63,38 @@ class GuestController {
     async getGuestByEventId(req, res) {
         try {
             const eventId = req.params.eventId
-            const { page = '1', limit = '20' } = req.query;
+            if (!eventId) return res.sendStatus(400)
 
-            let result = await Guest.find({ eventId: eventId })
+            const { page = '1', limit = '20', keyword } = req.query;
+            let search = {}
+
+            if (keyword) {
+                search =
+                {
+                    $or: [
+                        { name: { $regex: keyword, $options: 'i' } },
+                        { address: { $regex: keyword, $options: 'i' } }
+                    ]
+                }
+            }
+
+            let result = await Guest.find({
+                $and: [
+                    { eventId: eventId },
+                    search
+                ]
+            })
                 .limit(parseInt(limit) * 1)
                 .skip((parseInt(page) - 1) * parseInt(limit))
                 .exec()
 
-            // get total documents in the Posts collection 
-            const count = await Guest.find({ eventId: eventId }).countDocuments();
+            // get total documents in the guest(eventId) collection 
+            const count = await Guest.find({
+                $and: [
+                    { eventId: eventId },
+                    search
+                ]
+            }).countDocuments();
 
             if (result == null || result.length < 1) return res.status(404).json({
                 message: 'Data tidak ditemukan'
@@ -123,46 +146,46 @@ class GuestController {
 
     async guestPicture() { }
 
-    async searchGuest(req, res) {
-        try {
-            let keyword = {}
-            const eventId = req.params.eventId
+    // async searchGuest(req, res) {
+    //     try {
+    //         let keyword = {}
+    //         const eventId = req.params.eventId
 
-            if (!eventId) return res.sendStatus(400)
+    //         if (!eventId) return res.sendStatus(400)
 
-            if (req.query.keyword) {
-                keyword =
-                {
-                    $or: [
-                        { name: { $regex: req.query.keyword, $options: 'i' } },
-                        { address: { $regex: req.query.keyword, $options: 'i' } }
-                    ]
-                }
+    //         if (req.query.keyword) {
+    //             keyword =
+    //             {
+    //                 $or: [
+    //                     { name: { $regex: req.query.keyword, $options: 'i' } },
+    //                     { address: { $regex: req.query.keyword, $options: 'i' } }
+    //                 ]
+    //             }
 
-            }
+    //         }
 
-            let result = await Guest.find({
-                $and: [
-                    { eventId: eventId },
-                    keyword
-                ]
-            })
+    //         let result = await Guest.find({
+    //             $and: [
+    //                 { eventId: eventId },
+    //                 keyword
+    //             ]
+    //         })
 
-            if (result == null || result.length < 1) return res.status(404).json({
-                message: 'Data tidak ditemukan'
-            })
+    //         if (result == null || result.length < 1) return res.status(404).json({
+    //             message: 'Data tidak ditemukan'
+    //         })
 
-            res.status(200).json({
-                message: 'Berhasil mendapatkan data',
-                data: result
-            })
-        } catch (error) {
-            res.status(500).json({
-                message: error.message
-            })
-        }
+    //         res.status(200).json({
+    //             message: 'Berhasil mendapatkan data',
+    //             data: result
+    //         })
+    //     } catch (error) {
+    //         res.status(500).json({
+    //             message: error.message
+    //         })
+    //     }
 
-    }
+    // }
 
     addGuest(req, res) {
         const eventId = req.params.eventId
