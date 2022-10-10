@@ -12,12 +12,12 @@ class FileFilter {
     }
 
     imageFilter(req, file, cb) {
-        if (file.mimetype.includes("image")
-        ) {
+        // if (file.mimetype.includes("image")
+        // ) {
             cb(null, true);
-        } else {
-            cb("Please upload only image file.", false);
-        }
+        // } else {
+        //     cb("Please upload only image file.", false);
+        // }
     }
 }
 
