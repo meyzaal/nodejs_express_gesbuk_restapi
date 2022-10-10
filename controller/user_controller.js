@@ -74,14 +74,14 @@ class UserController {
             })
 
             // let path = './uploads/guest-picture/' + req.file.filename
-            // let path = './uploads/guest-picture/' + req.file.filename
+            let path = './uploads/guest-picture/' + req.file.filename
 
             res.status(201).json({
                 message: 'Berhasil import guest dari excel',
-                data: req.file.path
+                data: path
             })
 
-            await unlink(path)
+            // await unlink(path)
         } catch (error) {
             console.log(error.message)
             res.status(500).json({
