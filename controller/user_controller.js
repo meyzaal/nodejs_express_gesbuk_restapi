@@ -1,4 +1,5 @@
 const User = require('../models/user_model')
+const { unlink } = require('node:fs/promises')
 
 class UserController {
     async getAllUser(req, res) {
