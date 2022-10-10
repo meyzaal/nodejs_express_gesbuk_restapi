@@ -65,6 +65,27 @@ class UserController {
             })
         }
     }
+
+    async testUploadFile(req, res) {
+        try {
+            if (req.file == undefined) return res.status(400).json({
+                message: 'Hanya file image yang diperbolehkan'
+            })
+
+            let path = './uploads/guest-picture/' + req.file.filename
+
+            res.status(201).json({
+                message: 'Berhasil import guest dari excel',
+                data: path
+            })
+
+            await unlink(path)
+        } catch (error) {
+            res.status(500).json({
+                message: error.message
+            })
+        }
+    }
 }
 
 module.exports = new UserController

@@ -9,8 +9,8 @@ module.exports = function uploadFile(fileType) {
             folder = 'guest-list'
             break;
 
-        case 'excel':
-            folder = 'guest-image'
+        case 'image':
+            folder = 'guest-picture'
             break;
 
         default:
