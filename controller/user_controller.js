@@ -73,15 +73,14 @@ class UserController {
                 message: 'Hanya file image yang diperbolehkan'
             })
 
-            // let path = './uploads/guest-picture/' + req.file.filename
-            let path = './uploads/guest-picture/' + req.file.filename
+
 
             res.status(201).json({
                 message: 'Berhasil import guest dari excel',
-                data: path
+                data: req.file.path
             })
 
-            // await unlink(path)
+            await unlink(path)
         } catch (error) {
             console.log(error.message)
             res.status(500).json({
