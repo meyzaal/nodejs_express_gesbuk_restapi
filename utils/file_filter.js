@@ -12,11 +12,13 @@ class FileFilter {
     }
 
     imageFilter(req, file, cb) {
-        if (file.mimetype.includes("image")
+        if (file.mimetype == "image/jpg" ||
+            file.mimetype == "image/jpeg" ||
+            file.mimetype == "image/png"
         ) {
             cb(null, true);
         } else {
-            cb("Please upload only image file.", false);
+            cb("Please upload file with type .jpg, .jpeg, .png.", false);
         }
     }
 }

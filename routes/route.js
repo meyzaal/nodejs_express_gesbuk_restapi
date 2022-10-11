@@ -38,6 +38,5 @@ route.post(api + '/guest/import-guest/:eventId', Middleware.verifyFirebaseToken,
 route.get(api + '/guest/from-event/:eventId', GuestController.getGuestByEventId)
 route.patch(api + '/guest/check-in/:guestId', Middleware.verifyFirebaseToken, GuestController.guestCheckin)
 
-route.put(api + '/test-upload', uploadFile('image').single('uploadFile'), UserController.testUploadFile);
 
 module.exports = route
