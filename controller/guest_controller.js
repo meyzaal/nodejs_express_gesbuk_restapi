@@ -16,6 +16,7 @@ class GuestController {
     async importGuestFromExcel(req, res) {
         try {
             const eventId = req.params.eventId
+            if (!eventId) return res.sendStatus(400)
 
             await Guest.deleteMany({ eventId: eventId })
 
@@ -72,8 +73,7 @@ class GuestController {
                 search =
                 {
                     $or: [
-                        { name: { $regex: keyword, $options: 'i' } },
-                        { address: { $regex: keyword, $options: 'i' } }
+                        { name: { $regex: keyword, $options: 'i' } }
                     ]
                 }
             }
@@ -118,7 +118,7 @@ class GuestController {
     async guestCheckin(req, res) {
         try {
             const guestId = req.params.guestId
-            if (guestId == null) return res.sendStatus(400)
+            if (!guestId) return res.sendStatus(400)
 
             let result = await Guest.findById(guestId)
 
@@ -127,7 +127,7 @@ class GuestController {
             })
 
             const checkInTime = req.body.checkInTime
-            if (checkInTime == null) return res.sendStatus(400)
+            if (!checkInTime) return res.sendStatus(400)
 
             result.checkInTime = checkInTime
 
@@ -144,48 +144,38 @@ class GuestController {
         }
     }
 
-    async guestPicture() { }
+    async uploadGuestPhoto() {
+        try {
+            const guestId = req.params.guestId
+            if (guestId == null) return res.sendStatus(400)
 
-    // async searchGuest(req, res) {
-    //     try {
-    //         let keyword = {}
-    //         const eventId = req.params.eventId
+            let result = await Guest.findById(guestId)
 
-    //         if (!eventId) return res.sendStatus(400)
+            if (result == null || result.length < 1) return res.status(404).json({
+                message: 'Data tidak ditemukan'
+            })
 
-    //         if (req.query.keyword) {
-    //             keyword =
-    //             {
-    //                 $or: [
-    //                     { name: { $regex: req.query.keyword, $options: 'i' } },
-    //                     { address: { $regex: req.query.keyword, $options: 'i' } }
-    //                 ]
-    //             }
+            if (req.file == undefined) return res.status(400).json({
+                message: 'Hanya file image yang diperbolehkan'
+            })
 
-    //         }
+            const path = req.file.path
+            result.picture = req.file.path
+            
+            let savedGuest = await result.save()
 
-    //         let result = await Guest.find({
-    //             $and: [
-    //                 { eventId: eventId },
-    //                 keyword
-    //             ]
-    //         })
+            res.status(201).json({
+                message: 'Berhasil menambahkan foto tamu',
+                data: savedGuest
+            })
 
-    //         if (result == null || result.length < 1) return res.status(404).json({
-    //             message: 'Data tidak ditemukan'
-    //         })
-
-    //         res.status(200).json({
-    //             message: 'Berhasil mendapatkan data',
-    //             data: result
-    //         })
-    //     } catch (error) {
-    //         res.status(500).json({
-    //             message: error.message
-    //         })
-    //     }
-
-    // }
+        } catch (error) {
+            console.log(error.message)
+            res.status(500).json({
+                message: error.message
+            })
+        }
+    }
 
     addGuest(req, res) {
         const eventId = req.params.eventId
