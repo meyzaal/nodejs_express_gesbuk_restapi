@@ -160,7 +160,7 @@ class GuestController {
             })
 
             const path = req.file.path
-            result.picture = req.file.path
+            result.picture = path
             
             let savedGuest = await result.save()
 
