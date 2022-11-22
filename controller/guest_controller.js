@@ -144,7 +144,7 @@ class GuestController {
         }
     }
 
-    async uploadGuestPhoto() {
+    async uploadGuestPhoto(req, res) {
         try {
             const guestId = req.params.guestId
             if (guestId == null) return res.sendStatus(400)
