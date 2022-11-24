@@ -174,6 +174,32 @@ class EventController {
             })
         }
     }
+
+    async getUpcomingEvent(req, res) {
+        try {
+            const user = req.userData
+            let result = await Event.find({ userId: user._id })
+
+            if (result == null || result.length < 1) return res.status(404).json({
+                message: 'Data tidak ditemukan'
+            })
+
+            const upcomingEvent = result.startDate > Date.now()
+            if (upcomingEvent == null || upcomingEvent.length < 1) return res.status(404).json({
+                message: 'Data tidak ditemukan'
+            })
+
+            res.status(200).json({
+                message: 'Berhasil mendapatkan data',
+                data: upcomingEvent
+            })
+
+        } catch (error) {
+            res.status(500).json({
+                message: error.message
+            })
+        }
+    }
 }
 
 module.exports = new EventController
