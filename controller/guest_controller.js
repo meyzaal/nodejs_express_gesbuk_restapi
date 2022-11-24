@@ -51,7 +51,7 @@ class GuestController {
             let event = await Event.findById(eventId)
             event.guestList = listGuestId
 
-            event.save()
+            await event.save()
 
             await unlink(path)
         } catch (error) {
@@ -161,7 +161,7 @@ class GuestController {
 
             const path = req.file.path
             result.picture = path
-            
+
             let savedGuest = await result.save()
 
             res.status(201).json({
@@ -177,9 +177,42 @@ class GuestController {
         }
     }
 
-    addGuest(req, res) {
-        const eventId = req.params.eventId
-        const { name, category, checkInTime } = req.body
+    async addGuest(req, res) {
+        try {
+            const eventId = req.params.eventId
+            if (eventId == null) return res.sendStatus(400)
+
+            let event = await Event.findById(eventId)
+            if (event == null || event.length < 1) return res.status(404).json({
+                message: 'Event tidak ditemukan'
+            })
+
+            const { name, address, category } = req.body
+            if ((name && address && category) == null) return res.status(400).json({ message: 'Semua field wajib di isi' })
+
+            let newGuest = new Guest({
+                name: name,
+                address: address,
+                category: category,
+                eventId: eventId
+            })
+
+            let savedGuest = await newGuest.save()
+            let guestId = savedGuest._id
+
+            event.guestList.add(guestId)
+            await event.save()
+
+            res.status(201).json({
+                message: 'Berhasil menambahkan Guest',
+                data: savedGuest
+            })
+        } catch (error) {
+            console.log(error.message)
+            res.status(500).json({
+                message: error.message
+            })
+        }
     }
 }
 
