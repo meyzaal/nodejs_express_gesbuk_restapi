@@ -28,7 +28,7 @@ route.patch(api + '/user', Middleware.verifyFirebaseToken, UserController.editUs
 // event
 route.post(api + '/event', Middleware.verifyFirebaseToken, Middleware.verifyAdmin, EventController.createEvent)
 route.get(api + '/event', Middleware.verifyFirebaseToken, Middleware.verifyUser, EventController.getEventUser)
-route.get(api + '/event/upcoming-event', Middleware.verifyFirebaseToken, Middleware.verifyUser, EventController.getEventUser)
+route.get(api + '/event/upcoming-event', Middleware.verifyFirebaseToken, Middleware.verifyUser, EventController.getUpcomingEvent)
 route.get(api + '/event/all-event', Middleware.verifyFirebaseToken, Middleware.verifyAdmin, EventController.getAllEvent)
 route.get(api + '/event/:eventId', Middleware.verifyFirebaseToken, EventController.getEventById)
 route.patch(api + '/event/:eventId', Middleware.verifyFirebaseToken, EventController.editEventInfo)
