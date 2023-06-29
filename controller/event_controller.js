@@ -96,7 +96,7 @@ class EventController {
         try {
             const eventId = req.params.eventId
 
-            let result = await Event.findById(eventId).populate('guestList')
+            let result = await Event.findById(eventId)
 
             if (result == null || result.length < 1) return res.status(404).json({
                 message: 'Data tidak ditemukan'
