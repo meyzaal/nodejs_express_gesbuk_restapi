@@ -46,12 +46,12 @@ class GuestController {
                 data: guest
             })
 
-            const listGuestId = guest.map(a => a._id)
+            // const listGuestId = guest.map(a => a._id)
 
-            let event = await Event.findById(eventId)
-            event.guestList = listGuestId
+            // let event = await Event.findById(eventId)
+            // event.guestList = listGuestId
 
-            await event.save()
+            // await event.save()
 
             await unlink(path)
         } catch (error) {

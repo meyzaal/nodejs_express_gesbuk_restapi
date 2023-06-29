@@ -184,15 +184,10 @@ class EventController {
 
             const upcomingEvent = result.filter(event => event.startDate >= Date.now())
 
-            if (upcomingEvent == null || upcomingEvent.length < 1) return res.status(404).json({
-                message: 'Tidak ada event mendatang'
-            })
-
             res.status(200).json({
                 message: 'Berhasil mendapatkan data',
                 data: upcomingEvent
             })
-
         } catch (error) {
             res.status(500).json({
                 message: error.message
