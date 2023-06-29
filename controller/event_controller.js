@@ -1,7 +1,5 @@
 const makeid = require('../utils/random_string')
-
 const Event = require('../models/event_model')
-const User = require('../models/user_model')
 
 class EventController {
     async createEvent(req, res) {
