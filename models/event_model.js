@@ -28,6 +28,10 @@ const eventSchema = mongoose.Schema({
         enum: ['birthday', 'concert', 'wedding', 'seminar', 'event'],
         default: 'event'
     },
+    guestCount: {
+        type: Number,
+        default: 0
+    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'

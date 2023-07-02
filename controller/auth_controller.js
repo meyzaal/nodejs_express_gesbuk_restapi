@@ -1,13 +1,14 @@
-const {
-    getAuth: getClientAuth,
-    signInWithEmailAndPassword,
-    sendPasswordResetEmail,
-    sendEmailVerification,
-    createUserWithEmailAndPassword,
-    updateProfile,
-} = require("firebase/auth")
+// const {
+//     getAuth: getClientAuth,
+//     signInWithEmailAndPassword,
+//     sendPasswordResetEmail,
+//     sendEmailVerification,
+//     createUserWithEmailAndPassword,
+//     updateProfile,
+// } = require("firebase/auth")
 
 const User = require('../models/user_model')
+const firebase = require('../services/firebase')
 
 class AuthController {
     async googleValidate(req, res) {
@@ -47,21 +48,24 @@ class AuthController {
                 message: 'Semua field wajib di isi'
             })
 
-            const credential = await createUserWithEmailAndPassword(
-                getClientAuth(),
-                email,
-                password
-            );
+            // const credential = await createUserWithEmailAndPassword(
+            //     getClientAuth(),
+            //     email,
+            //     password
+            // );
 
-            await updateProfile(credential.user, {
-                displayName: titleCase(full_name).trim(),
-                emailVerified: false,
-            });
+            await firebase.auth.createUser({ email: email, password: password })
 
-            let result = await User.findOne({ email: email })
-            if (result != null) return res.status(400).json({
-                message: 'Email sudah terdaftar'
-            })
+
+            // await updateProfile(credential.user, {
+            //     displayName: titleCase(full_name).trim(),
+            //     emailVerified: false,
+            // });
+
+            // let result = await User.findOne({ email: email })
+            // if (result != null) return res.status(400).json({
+            //     message: 'Email sudah terdaftar'
+            // })
 
             const newAdmin = new User({
                 name: name,
@@ -72,8 +76,6 @@ class AuthController {
 
             await newAdmin.save()
 
-            const user = getClientAuth().currentUser;
-            await sendEmailVerification(user);
 
             res.status(201).json({
                 message: 'Berhasil mendaftar. Silakan verifikasi email Anda dengan mengklik link verifikasi di kotak masuk email Anda.',

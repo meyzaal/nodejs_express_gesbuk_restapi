@@ -46,6 +46,10 @@ class GuestController {
                 data: guest
             })
 
+            let event = await Event.findById(eventId)
+            event.guestCount = data.length
+            await event.save()
+
             // const listGuestId = guest.map(a => a._id)
 
             // let event = await Event.findById(eventId)

@@ -1,5 +1,5 @@
 
-const { initializeApp } = require('firebase/app');
+// const { initializeApp } = require('firebase/app');
 const admin = require('firebase-admin')
 
 const serviceAccount = {
