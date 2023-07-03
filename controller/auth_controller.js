@@ -78,7 +78,7 @@ class AuthController {
 
 
             res.status(201).json({
-                message: 'Berhasil mendaftar. Silakan verifikasi email Anda dengan mengklik link verifikasi di kotak masuk email Anda.',
+                message: 'Berhasil mendaftar',
             })
         } catch (error) {
             res.status(500).json({

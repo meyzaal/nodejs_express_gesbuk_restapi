@@ -55,11 +55,11 @@ class EventController {
 
     async getAllEvent(req, res) {
         try {
-            let result = await Event.find()
+            let result = await Event.find().populate('user', 'email').exec()
 
-            if (result == null || result.length < 1) return res.status(404).json({
-                message: 'Data tidak ditemukan'
-            })
+            // if (result == null || result.length < 1) return res.status(404).json({
+            //     message: 'Data tidak ditemukan'
+            // })
 
             res.status(200).json({
                 message: 'Berhasil mendapatkan data',

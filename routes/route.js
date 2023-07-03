@@ -26,8 +26,8 @@ route.get(api + '/user/all-user', Middleware.verifyFirebaseToken, Middleware.ver
 route.patch(api + '/user', Middleware.verifyFirebaseToken, UserController.editUserInfo)
 
 // event
-// route.post(api + '/event', Middleware.verifyFirebaseToken, Middleware.verifyAdmin, EventController.createEvent)
-route.post(api + '/event', Middleware.verifyFirebaseToken, EventController.createEvent)
+route.post(api + '/event', Middleware.verifyFirebaseToken, Middleware.verifyAdmin, EventController.createEvent)
+// route.post(api + '/event', Middleware.verifyFirebaseToken, EventController.createEvent)
 route.get(api + '/event', Middleware.verifyFirebaseToken, Middleware.verifyUser, EventController.getEventUser)
 route.get(api + '/event/upcoming-event', Middleware.verifyFirebaseToken, Middleware.verifyUser, EventController.getUpcomingEvent)
 route.get(api + '/event/all-event', Middleware.verifyFirebaseToken, Middleware.verifyAdmin, EventController.getAllEvent)
@@ -38,7 +38,7 @@ route.put(api + '/event/add-user', Middleware.verifyFirebaseToken, Middleware.ve
 // guest
 route.post(api + '/guest/import-guest/:eventId', Middleware.verifyFirebaseToken, Middleware.verifyAdmin, uploadFile('excel').single('uploadFile'), GuestController.importGuestFromExcel)
 route.post(api + '/guest/add-guest/:eventId', Middleware.verifyFirebaseToken, GuestController.addGuest)
-route.get(api + '/guest/from-event/:eventId',  Middleware.verifyFirebaseToken, GuestController.getGuestByEventId)
+route.get(api + '/guest/from-event/:eventId', Middleware.verifyFirebaseToken, GuestController.getGuestByEventId)
 route.patch(api + '/guest/check-in/:guestId', Middleware.verifyFirebaseToken, GuestController.guestCheckin)
 route.put(api + '/guest/upload-photo/:guestId', Middleware.verifyFirebaseToken, uploadFile('image').single('uploadFile'), GuestController.uploadGuestPhoto)
 
