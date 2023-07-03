@@ -1,12 +1,13 @@
 const makeid = require('../utils/random_string')
 const Event = require('../models/event_model')
+const Guest = require('../models/guest_model')
 
 class EventController {
     async createEvent(req, res) {
         try {
             const { name, location, startDate, imageUrl, eventType } = req.body
 
-            if ((name && location && startDate  && eventType) == null) return res.status(400).json({ message: 'Semua field wajib di isi' })
+            if ((name && location && startDate && eventType) == null) return res.status(400).json({ message: 'Semua field wajib di isi' })
 
             let defaultImage
 
@@ -180,6 +181,25 @@ class EventController {
 
             res.status(200).json({
                 message: 'Berhasil mendapatkan data',
+                data: upcomingEvent
+            })
+        } catch (error) {
+            res.status(500).json({
+                message: error.message
+            })
+        }
+    }
+
+    async deleteEvent(req, res) {
+        try {
+            const eventId = req.query.eventId
+
+            await Guest.deleteMany({ eventId: eventId })
+
+            await Event.findByIdAndDelete(eventId)
+
+            res.status(200).json({
+                message: 'Berhasil menghapus data event dan tamunya',
                 data: upcomingEvent
             })
         } catch (error) {
