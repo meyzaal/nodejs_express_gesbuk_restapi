@@ -4,9 +4,9 @@ const Event = require('../models/event_model')
 class EventController {
     async createEvent(req, res) {
         try {
-            const { name, location, startDate, endDate, imageUrl, eventType } = req.body
+            const { name, location, startDate, imageUrl, eventType } = req.body
 
-            if ((name && location && startDate && endDate && eventType) == null) return res.status(400).json({ message: 'Semua field wajib di isi' })
+            if ((name && location && startDate  && eventType) == null) return res.status(400).json({ message: 'Semua field wajib di isi' })
 
             let defaultImage
 
@@ -34,7 +34,6 @@ class EventController {
                 name: name,
                 location: location,
                 startDate: startDate,
-                endDate: endDate,
                 key: key,
                 imageUrl: imageUrl ?? defaultImage,
                 eventType: eventType
@@ -55,7 +54,7 @@ class EventController {
 
     async getAllEvent(req, res) {
         try {
-            let result = await Event.find().populate('user', 'email').exec()
+            let result = await Event.find().populate('user').exec()
 
             // if (result == null || result.length < 1) return res.status(404).json({
             //     message: 'Data tidak ditemukan'
@@ -112,7 +111,7 @@ class EventController {
     async editEventInfo(req, res) {
         try {
             const eventId = req.params.eventId
-            const { name, location, startDate, endDate, imageUrl, eventType } = req.body
+            const { name, location, startDate, imageUrl, eventType } = req.body
 
             let event = await Event.findById(eventId)
             if (event == null || event.length < 1) return res.status(404).json({
@@ -124,7 +123,6 @@ class EventController {
             event.name = name ?? event.name
             event.location = location ?? event.location
             event.startDate = startDate ?? event.startDate
-            event.endDate = endDate ?? event.endDate
             event.imageUrl = imageUrl ?? event.imageUrl
             event.eventType = eventType ?? event.eventType
             event.key = newKey

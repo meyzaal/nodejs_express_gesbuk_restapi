@@ -14,10 +14,6 @@ const eventSchema = mongoose.Schema({
         type: Date,
         required: true
     },
-    endDate: {
-        type: Date,
-        required: true
-    },
     key: String,
     isEnrolled: {
         type: Boolean,
