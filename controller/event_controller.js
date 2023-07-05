@@ -197,7 +197,7 @@ class EventController {
             let deleteGuests = await Guest.deleteMany({ eventId: eventId })
             console.log(deleteGuests)
 
-            let deleteEvent = await Event.findByIdAndDelete(eventId)
+            let deleteEvent = await Event.findByIdAndRemove(eventId)
             console.log(deleteEvent)
 
             res.status(200).json({
