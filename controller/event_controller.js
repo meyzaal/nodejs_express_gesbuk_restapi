@@ -194,9 +194,11 @@ class EventController {
         try {
             const eventId = req.query.eventId
 
-            await Guest.deleteMany({ eventId: eventId })
+            let deleteGuests = await Guest.deleteMany({ eventId: eventId })
+            console.log(deleteGuests)
 
-            await Event.findByIdAndDelete(eventId)
+            let deleteEvent = await Event.findByIdAndDelete(eventId)
+            console.log(deleteEvent)
 
             res.status(200).json({
                 message: 'Berhasil menghapus data event dan tamunya'
