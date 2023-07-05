@@ -192,7 +192,7 @@ class EventController {
 
     async deleteEvent(req, res) {
         try {
-            const eventId = req.query.eventId
+            const eventId = req.params.eventId
             console.log(eventId);
 
             let deleteEvent = await Event.findOneAndDelete(eventId)
