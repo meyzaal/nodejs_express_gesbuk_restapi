@@ -199,8 +199,7 @@ class EventController {
             await Event.findByIdAndDelete(eventId)
 
             res.status(200).json({
-                message: 'Berhasil menghapus data event dan tamunya',
-                data: upcomingEvent
+                message: 'Berhasil menghapus data event dan tamunya'
             })
         } catch (error) {
             res.status(500).json({
