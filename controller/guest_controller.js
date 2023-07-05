@@ -24,7 +24,7 @@ class GuestController {
                 message: 'Hanya file excel yang diperbolehkan'
             })
 
-            let path = `./uploads/guest-list/${eventId}-${req.file.filename}`
+            let path = `./uploads/guest-list/${req.file.filename}`
             let rows = await readXlsxFile(path)
             let data = []
 
