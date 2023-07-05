@@ -31,7 +31,7 @@ route.get(api + '/event', Middleware.verifyFirebaseToken, Middleware.verifyUser,
 route.get(api + '/event/upcoming-event', Middleware.verifyFirebaseToken, Middleware.verifyUser, EventController.getUpcomingEvent)
 route.get(api + '/event/all-event', Middleware.verifyFirebaseToken, Middleware.verifyAdmin, EventController.getAllEvent)
 route.get(api + '/event/:eventId', Middleware.verifyFirebaseToken, EventController.getEventById)
-route.delete(api + '/event', Middleware.verifyFirebaseToken, Middleware.verifyAdmin, EventController.deleteEvent)
+route.delete(api + '/event/:eventId', Middleware.verifyFirebaseToken, Middleware.verifyAdmin, EventController.deleteEvent)
 route.patch(api + '/event/:eventId', Middleware.verifyFirebaseToken, EventController.editEventInfo)
 route.put(api + '/event/add-user', Middleware.verifyFirebaseToken, Middleware.verifyUser, EventController.addUserToEvent)
 
