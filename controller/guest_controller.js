@@ -70,7 +70,8 @@ class GuestController {
             const eventId = req.params.eventId
             if (!eventId) return res.sendStatus(400)
 
-            const { page = '1', limit = '20', keyword } = req.query;
+            const { page, limit, keyword } = req.query;
+
             let search = {}
 
             if (keyword) {
@@ -88,8 +89,8 @@ class GuestController {
                     search
                 ]
             })
-                .limit(parseInt(limit) * 1)
-                .skip((parseInt(page) - 1) * parseInt(limit))
+                .limit(limit * 1)
+                .skip((page - 1) * limit)
                 .exec()
 
             // get total documents in the guest(eventId) collection 
@@ -107,8 +108,8 @@ class GuestController {
             res.status(200).json({
                 message: 'Berhasil mendapatkan data',
                 data: result,
-                currentPage: parseInt(page),
-                totalResults: parseInt(count),
+                currentPage: page,
+                totalResults: count,
                 totalPages: Math.ceil(count / limit),
 
             })
