@@ -148,8 +148,16 @@ class EventController {
             const key = req.query.key
 
             let event = await Event.findOne({ key: key })
-            if (event == null) return res.sendStatus(400)
-            if (event.isEnrolled == true) return res.sendStatus(403)
+            if (event == null) {
+                return res.status(403).json({
+                    message: 'Kode event salah',
+                })
+            }
+            if (event.isEnrolled == true) {
+                return res.status(403).json({
+                    message: 'Event tidak bisa di enroll',
+                })
+            }
 
             event.userId = id
             event.isEnrolled = true
