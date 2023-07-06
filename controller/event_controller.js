@@ -147,7 +147,7 @@ class EventController {
             const id = userData._id
             const key = req.query.key
 
-            let event = await Event.findOne({ key: key })
+            let event = await Event.findOne({ key: key }).populate('user').exec()
             if (event == null) {
                 return res.status(403).json({
                     message: 'Kode event salah',
@@ -163,7 +163,7 @@ class EventController {
             event.isEnrolled = true
             event.key = null
 
-            let saveEvent = await event.save().populate('user').exec()
+            let saveEvent = await event.save()
 
             res.status(201).json({
                 message: 'User berhasil ditambahkan ke event',
