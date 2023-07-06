@@ -159,7 +159,7 @@ class EventController {
                 })
             }
 
-            event.userId = id
+            event.user = id
             event.isEnrolled = true
             event.key = null
 
