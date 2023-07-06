@@ -179,7 +179,7 @@ class EventController {
     async getUpcomingEvent(req, res) {
         try {
             const user = req.userData
-            let result = await Event.find({ user: user._id })
+            let result = await Event.find({ user: user._id }).populate('user').exec()
 
             if (result == null || result.length < 1) return res.status(404).json({
                 message: 'Data tidak ditemukan'
