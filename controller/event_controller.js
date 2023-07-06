@@ -163,12 +163,10 @@ class EventController {
             event.isEnrolled = true
             event.key = null
 
-            let saveEvent = await event.save()
-            let result = await saveEvent.populate('user').exec()
+            await event.save()
 
             res.status(201).json({
                 message: 'User berhasil ditambahkan ke event',
-                data: result
             })
         } catch (error) {
             res.status(500).json({
