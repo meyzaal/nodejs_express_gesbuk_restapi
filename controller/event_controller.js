@@ -75,7 +75,7 @@ class EventController {
     async getEventUser(req, res) {
         try {
             const user = req.userData
-            let result = await Event.find({ user: user._id })
+            let result = await Event.find({ user: user._id }).populate('user').exec()
 
             res.status(200).json({
                 message: 'Berhasil mendapatkan data',
@@ -92,7 +92,7 @@ class EventController {
         try {
             const eventId = req.params.eventId
 
-            let result = await Event.findById(eventId)
+            let result = await Event.findById(eventId).populate('user').exec()
 
             if (result == null || result.length < 1) return res.status(404).json({
                 message: 'Data tidak ditemukan'
@@ -147,7 +147,7 @@ class EventController {
             const id = userData._id
             const key = req.query.key
 
-            let event = await Event.findOne({ key: key }).populate('user').exec()
+            let event = await Event.findOne({ key: key })
             if (event == null) {
                 return res.status(403).json({
                     message: 'Kode event salah',
@@ -163,7 +163,7 @@ class EventController {
             event.isEnrolled = true
             event.key = null
 
-            let saveEvent = await event.save()
+            let saveEvent = await event.save().populate('user').exec()
 
             res.status(201).json({
                 message: 'User berhasil ditambahkan ke event',
