@@ -75,7 +75,7 @@ class EventController {
     async getEventUser(req, res) {
         try {
             const user = req.userData
-            let result = await Event.find({ userId: user._id })
+            let result = await Event.find({ user: user._id })
 
             res.status(200).json({
                 message: 'Berhasil mendapatkan data',
@@ -171,7 +171,7 @@ class EventController {
     async getUpcomingEvent(req, res) {
         try {
             const user = req.userData
-            let result = await Event.find({ userId: user._id })
+            let result = await Event.find({ user: user._id })
 
             if (result == null || result.length < 1) return res.status(404).json({
                 message: 'Data tidak ditemukan'
