@@ -133,14 +133,14 @@ class GuestController {
                 message: 'Guest berhasil check in',
                 data: saveGuest
             })
-            
+
             const eventId = saveGuest.eventId
             const guestsPresent = await Guest.countDocuments({ eventId: eventId, checkInTime: { $ne: null } })
             const guestsAbsent = await Guest.countDocuments({ eventId: eventId, checkInTime: null })
             const totalGuests = guestsPresent + guestsAbsent
-            const percentage = (guestsPresent / totalGuests) * 100
+            const percentage = (totalGuests > 0) ? (guestsPresent / totalGuests) * 100 : 0
 
-            let reportEvent = await ReportEvent.find({eventId: eventId});
+            let reportEvent = await ReportEvent.find({ eventId: eventId });
 
             reportEvent.guestsPresent = guestsPresent
             reportEvent.guestsAbsent = guestsAbsent
