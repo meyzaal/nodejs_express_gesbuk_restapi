@@ -138,7 +138,7 @@ class GuestController {
             const guestsPresent = await Guest.countDocuments({ eventId: eventId, checkInTime: { $ne: null } })
             const guestsAbsent = await Guest.countDocuments({ eventId: eventId, checkInTime: null })
             const totalGuests = guestsPresent + guestsAbsent
-            const percentage = guestsPresent / totalGuests
+            const percentage = (guestsPresent / totalGuests) * 100
 
             let reportEvent = await ReportEvent.find({eventId: eventId});
 
