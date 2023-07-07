@@ -60,7 +60,7 @@ class EventController {
             saveEvent.reportEvent = saveReportEvent._id;
 
             await saveEvent.save();
-            let result = await saveEvent.populate('user').populate('reportEvent').exec()
+            let result = await Event.findById(eventId).populate('user').populate('reportEvent').exec()
 
             res.status(201).json({
                 message: 'Berhasil menambahkan data',
