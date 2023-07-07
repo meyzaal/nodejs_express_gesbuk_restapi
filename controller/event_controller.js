@@ -56,7 +56,10 @@ class EventController {
                 eventId: eventId
             })
 
-            await newReportEvent.save()
+            let saveReportEvent = await newReportEvent.save()
+            saveEvent.reportEvent = saveReportEvent._id;
+
+            await saveEvent.save();
 
             res.status(201).json({
                 message: 'Berhasil menambahkan data',
