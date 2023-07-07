@@ -73,7 +73,7 @@ class EventController {
 
     async getAllEvent(req, res) {
         try {
-            let result = await Event.find().populate('user').populate('eventReport').exec()
+            let result = await Event.find().populate('user').populate('reportEvent').exec()
 
             res.status(200).json({
                 message: 'Berhasil mendapatkan data',
@@ -89,7 +89,7 @@ class EventController {
     async getEventUser(req, res) {
         try {
             const user = req.userData
-            let result = await Event.find({ user: user._id }).populate('user').populate('eventReport').exec()
+            let result = await Event.find({ user: user._id }).populate('user').populate('reportEvent').exec()
 
             res.status(200).json({
                 message: 'Berhasil mendapatkan data',
@@ -106,7 +106,7 @@ class EventController {
         try {
             const eventId = req.params.eventId
 
-            let result = await Event.findById(eventId).populate('user').populate('eventReport').exec()
+            let result = await Event.findById(eventId).populate('user').populate('reportEvent').exec()
 
             if (result == null || result.length < 1) return res.status(404).json({
                 message: 'Data tidak ditemukan'
@@ -192,7 +192,7 @@ class EventController {
     async getUpcomingEvent(req, res) {
         try {
             const user = req.userData
-            let result = await Event.find({ user: user._id }).populate('user').populate('eventReport').exec()
+            let result = await Event.find({ user: user._id }).populate('user').populate('reportEvent').exec()
 
             if (result == null || result.length < 1) return res.status(404).json({
                 message: 'Data tidak ditemukan'

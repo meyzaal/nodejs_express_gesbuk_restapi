@@ -32,9 +32,9 @@ const eventSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    eventReport: {
+    reportEvent: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'EventReport'
+        ref: 'ReportEvent'
     }
 }, { timestamps: true })
 
