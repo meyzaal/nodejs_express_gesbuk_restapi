@@ -2,6 +2,8 @@ const readXlsxFile = require('read-excel-file/node')
 
 const Guest = require('../models/guest_model')
 const Event = require('../models/event_model')
+const ReportEvent = require('../models/report_event_model')
+
 const { unlink } = require('node:fs/promises')
 
 class GuestController {
@@ -49,13 +51,6 @@ class GuestController {
             let event = await Event.findById(eventId)
             event.guestCount = data.length
             await event.save()
-
-            // const listGuestId = guest.map(a => a._id)
-
-            // let event = await Event.findById(eventId)
-            // event.guestList = listGuestId
-
-            // await event.save()
 
             await unlink(path)
         } catch (error) {
@@ -138,6 +133,20 @@ class GuestController {
                 message: 'Guest berhasil check in',
                 data: saveGuest
             })
+            
+            const eventId = saveGuest.eventId
+            const guestsPresent = await Guest.countDocuments({ eventId: eventId, checkInTime: { $ne: null } })
+            const guestsAbsent = await Guest.countDocuments({ eventId: eventId, checkInTime: null })
+            const totalGuests = guestsPresent + guestsAbsent
+            const percentage = (guestsPresent / totalGuests) * 100
+
+            let reportEvent = await ReportEvent.find({eventId: eventId});
+
+            reportEvent.guestsPresent = guestsPresent
+            reportEvent.guestsAbsent = guestsAbsent
+            reportEvent.percentage = percentage
+
+            await reportEvent.save()
         } catch (error) {
             res.status(500).json({
                 message: error.message

@@ -1,6 +1,7 @@
 const makeid = require('../utils/random_string')
 const Event = require('../models/event_model')
 const Guest = require('../models/guest_model')
+const ReportEvent = require('../models/report_event_model')
 
 class EventController {
     async createEvent(req, res) {
@@ -41,10 +42,24 @@ class EventController {
             })
 
             let saveEvent = await newEvent.save()
+            const eventId = saveEvent._id
+
+            const guestsPresent = await Guest.countDocuments({ eventId: eventId, checkInTime: { $ne: null } })
+            const guestsAbsent = await Guest.countDocuments({ eventId: eventId, checkInTime: null })
+            const totalGuests = guestsPresent + guestsAbsent
+            const percentage = (guestsPresent / totalGuests) * 100
+
+            let newReportEvent = new ReportEvent({
+                guestPresent: guestsPresent,
+                guestsAbsent: guestsAbsent,
+                percentage: percentage,
+                eventId: eventId
+            })
+
+            await newReportEvent.save()
 
             res.status(201).json({
                 message: 'Berhasil menambahkan data',
-                data: saveEvent
             })
         } catch (error) {
             res.status(500).json({
@@ -55,11 +70,7 @@ class EventController {
 
     async getAllEvent(req, res) {
         try {
-            let result = await Event.find().populate('user').exec()
-
-            // if (result == null || result.length < 1) return res.status(404).json({
-            //     message: 'Data tidak ditemukan'
-            // })
+            let result = await Event.find().populate('user').populate('eventReport').exec()
 
             res.status(200).json({
                 message: 'Berhasil mendapatkan data',
@@ -75,7 +86,7 @@ class EventController {
     async getEventUser(req, res) {
         try {
             const user = req.userData
-            let result = await Event.find({ user: user._id }).populate('user').exec()
+            let result = await Event.find({ user: user._id }).populate('user').populate('eventReport').exec()
 
             res.status(200).json({
                 message: 'Berhasil mendapatkan data',
@@ -92,7 +103,7 @@ class EventController {
         try {
             const eventId = req.params.eventId
 
-            let result = await Event.findById(eventId).populate('user').exec()
+            let result = await Event.findById(eventId).populate('user').populate('eventReport').exec()
 
             if (result == null || result.length < 1) return res.status(404).json({
                 message: 'Data tidak ditemukan'
@@ -178,7 +189,7 @@ class EventController {
     async getUpcomingEvent(req, res) {
         try {
             const user = req.userData
-            let result = await Event.find({ user: user._id }).populate('user').exec()
+            let result = await Event.find({ user: user._id }).populate('user').populate('eventReport').exec()
 
             if (result == null || result.length < 1) return res.status(404).json({
                 message: 'Data tidak ditemukan'
@@ -200,17 +211,15 @@ class EventController {
     async deleteEvent(req, res) {
         try {
             const eventId = req.params.eventId
-            console.log(eventId);
 
-            let deleteEvent = await Event.findOneAndDelete(eventId)
-            console.log(deleteEvent)
+            await Event.findOneAndDelete(eventId)
+            await ReportEvent.findOneAndDelete(eventId)
+            await Guest.deleteMany({ eventId: eventId })
 
             res.status(200).json({
                 message: 'Berhasil menghapus data event dan tamunya'
             })
 
-            let deleteGuests = await Guest.deleteMany({ eventId: eventId })
-            console.log(deleteGuests)
         } catch (error) {
             res.status(500).json({
                 message: error.message
