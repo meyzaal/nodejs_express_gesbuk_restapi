@@ -85,7 +85,7 @@ class GuestController {
                 ]
             })
                 .limit(limit * 1)
-                .skip((page - 1) * limit)
+                .skip((parseInt(page) - 1) * limit)
                 .exec()
 
             // get total documents in the guest(eventId) collection 
@@ -99,7 +99,7 @@ class GuestController {
             res.status(200).json({
                 message: 'Berhasil mendapatkan data',
                 data: result,
-                currentPage: page,
+                currentPage: parseInt(page),
                 totalResults: count,
                 totalPages: Math.ceil(count / limit),
 
