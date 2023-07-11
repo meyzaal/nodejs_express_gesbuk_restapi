@@ -135,20 +135,20 @@ class GuestController {
             const totalGuests = guestsPresent + guestsAbsent
             const percentage = (totalGuests > 0) ? (guestsPresent / totalGuests) * 100 : 0
 
-            let reportEvent = await ReportEvent.find({ eventId: eventId });
-
-            reportEvent.guestsPresent = guestsPresent
-            reportEvent.guestsAbsent = guestsAbsent
-            reportEvent.percentage = percentage
-
-            await reportEvent.save()
+            const filter = { eventId: eventId }
+            const update = {
+                guestsPresent: guestsPresent,
+                guestsAbsent: guestsAbsent,
+                percentage: percentage
+            }
+            await ReportEvent.findOneAndUpdate(filter, update);
 
             res.status(201).json({
                 message: 'Guest berhasil check in',
                 data: saveGuest
             })
 
-            
+
         } catch (error) {
             res.status(500).json({
                 message: error.message
