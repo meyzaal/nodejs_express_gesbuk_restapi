@@ -44,15 +44,7 @@ class EventController {
             let saveEvent = await newEvent.save()
             const eventId = saveEvent._id
 
-            const guestsPresent = await Guest.countDocuments({ eventId: eventId, checkInTime: { $ne: null } })
-            const guestsAbsent = await Guest.countDocuments({ eventId: eventId, checkInTime: null })
-            const totalGuests = guestsPresent + guestsAbsent
-            const percentage = (totalGuests > 0) ? (guestsPresent / totalGuests) * 100 : 0
-
             let newReportEvent = new ReportEvent({
-                guestPresent: guestsPresent,
-                guestsAbsent: guestsAbsent,
-                percentage: percentage,
                 eventId: eventId
             })
 
