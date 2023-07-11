@@ -137,8 +137,8 @@ class GuestController {
 
             const filter = { eventId: eventId }
             const update = {
-                guestsPresent: guestsPresent,
-                guestsAbsent: guestsAbsent,
+                guestPresent: guestsPresent,
+                guestAbsent: guestsAbsent,
                 percentage: percentage
             }
             await ReportEvent.findOneAndUpdate(filter, update);
