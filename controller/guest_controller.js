@@ -129,11 +129,6 @@ class GuestController {
 
             let saveGuest = await result.save()
 
-            res.status(201).json({
-                message: 'Guest berhasil check in',
-                data: saveGuest
-            })
-
             const eventId = saveGuest.eventId
             const guestsPresent = await Guest.countDocuments({ eventId: eventId, checkInTime: { $ne: null } })
             const guestsAbsent = await Guest.countDocuments({ eventId: eventId, checkInTime: null })
@@ -147,6 +142,13 @@ class GuestController {
             reportEvent.percentage = percentage
 
             await reportEvent.save()
+
+            res.status(201).json({
+                message: 'Guest berhasil check in',
+                data: saveGuest
+            })
+
+            
         } catch (error) {
             res.status(500).json({
                 message: error.message
