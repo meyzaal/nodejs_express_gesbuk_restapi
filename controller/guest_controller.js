@@ -125,6 +125,12 @@ class GuestController {
             const checkInTime = req.body.checkInTime
             if (!checkInTime) return res.sendStatus(400)
 
+            if (result.checkInTime != null) {
+                return res.status(403).json({
+                    message: 'Tamu sudah check-in'
+                })
+            }
+
             result.checkInTime = checkInTime
 
             let saveGuest = await result.save()
@@ -147,7 +153,6 @@ class GuestController {
                 message: 'Guest berhasil check in',
                 data: saveGuest
             })
-
 
         } catch (error) {
             res.status(500).json({
